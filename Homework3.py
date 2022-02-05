@@ -9,14 +9,18 @@ def Generator(point, D):
 def Dijkstra(point, V):
     shortest_way = [math.inf]*len(V)
     shortest_way[point] = 0
-    # pyth = [0] * len(V)
-    # for i in range(len(V)):
-    #     pyth[i] = []*len(V)
+    pyth = [0] * len(V)
+    for i in range(len(V)):
+        pyth[i] = []*len(V)
     mark = [point]
     while point != -1:
         for i in Generator(point, V):
             if i not in mark:
-                shortest_way[i] = min(shortest_way[i], V[point][i] + shortest_way[point])
+                if shortest_way[i] > V[point][i] + shortest_way[point]:
+                    shortest_way[i] = V[point][i] + shortest_way[point]
+                    pyth[i].append(point)
+
+                # shortest_way[i] = min(shortest_way[i], V[point][i] + shortest_way[point])
         min_shortest_way = max(shortest_way)
         mini = -1
         for i in range(len(shortest_way)):
@@ -27,7 +31,8 @@ def Dijkstra(point, V):
         if point >= 0:
             mark.append(point)
 
-    return mark
+    # return shortest_way
+    return pyth
 
 GRAF = [i+j for i in 'ABCDEFGH' for j in '01234']
 GRAFi = [j+i*5 for i in range(8) for j in range(5)]
@@ -56,4 +61,6 @@ print()
 print()
 print()
 s = Dijkstra(0,V)
-print(s)
+# print(s)
+for i in s:
+    print(i)
