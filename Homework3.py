@@ -32,7 +32,7 @@ def Dijkstra(point, V):
             mark.append(point)
 
     # return shortest_way
-    return pyth
+    return shortest_way
 
 GRAF = [i+j for i in 'ABCDEFGH' for j in '01234']
 GRAFi = [j+i*5 for i in range(8) for j in range(5)]
@@ -61,6 +61,4 @@ print()
 print()
 print()
 s = Dijkstra(0,V)
-# print(s)
-for i in s:
-    print(i)
+print(s)
