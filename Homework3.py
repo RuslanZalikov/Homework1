@@ -82,8 +82,8 @@ print()
 print()
 print()
 print()
-Spider = 'A4'
-Fly = 'C2'
+Spider = input()
+Fly = input()
 Spider = Translate[Spider]
 Fly = Translate[Fly]
 s = Dijkstra(Spider,V)
