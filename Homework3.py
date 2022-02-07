@@ -1,10 +1,36 @@
 from pprint import pprint
 import math
 
-def Generator(point, D):
-    for j in range(len(D[point])):
-        if D[point][j] >= 0:
+def Generator(point, V):
+    for j in range(len(V[point])):
+        if V[point][j] >= 0:
              yield j
+
+def Generator_Path_recovery(point, V):
+    for j in range(len(V[point])):
+        if V[point][j] > 0:
+             yield j
+
+def Path_recovery(Start, Finish, shortest_way, V):
+    point = Finish
+    short_with_point = dict()
+    final_pyth = []
+    while point != Start:
+        min_value = math.inf
+        for i in Generator_Path_recovery(point, V):
+            short_with_point.update({i:shortest_way[i]+V[i][point]})
+        for key in short_with_point:
+            if short_with_point[key] <= min_value:
+                min_value = short_with_point[key]
+                min_index = key
+        point = min_index
+        short_with_point = dict()
+        if Start%5 == 0 and point%5 == 0:
+            return final_pyth
+        if point%5 == 0:
+            point = 0
+        final_pyth.append(point)
+    return final_pyth
 
 def Dijkstra(point, V):
     shortest_way = [math.inf]*len(V)
@@ -16,11 +42,7 @@ def Dijkstra(point, V):
     while point != -1:
         for i in Generator(point, V):
             if i not in mark:
-                if shortest_way[i] > V[point][i] + shortest_way[point]:
-                    shortest_way[i] = V[point][i] + shortest_way[point]
-                    pyth[i].append(point)
-
-                # shortest_way[i] = min(shortest_way[i], V[point][i] + shortest_way[point])
+                shortest_way[i] = min(shortest_way[i], V[point][i] + shortest_way[point])
         min_shortest_way = max(shortest_way)
         mini = -1
         for i in range(len(shortest_way)):
@@ -30,14 +52,14 @@ def Dijkstra(point, V):
         point = mini
         if point >= 0:
             mark.append(point)
-
-    # return shortest_way
     return shortest_way
 
 GRAF = [i+j for i in 'ABCDEFGH' for j in '01234']
 GRAFi = [j+i*5 for i in range(8) for j in range(5)]
-for i in range(40):
-    print(GRAF[i], ' ', GRAFi[i])
+Translate = {GRAF[i]:GRAFi[i] for i in range(40)}
+print(Translate)
+ReverseTranslate = {GRAFi[i]:GRAF[i] for i in range(40)}
+print(ReverseTranslate)
 V = [-1] * len(GRAF)
 for i in range(len(GRAF)):
     V[i] = [int(-1)] * len(GRAF)
@@ -60,5 +82,14 @@ print()
 print()
 print()
 print()
-s = Dijkstra(0,V)
-print(s)
+Spider = 'A4'
+Fly = 'C2'
+Spider = Translate[Spider]
+Fly = Translate[Fly]
+s = Dijkstra(Spider,V)
+s = Path_recovery(Spider, Fly, s, V)
+s.reverse()
+for i in range(len(s)):
+    s[i] = ReverseTranslate[s[i]]
+s.append(ReverseTranslate[Fly])
+print('-'.join(s))
